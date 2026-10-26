@@ -7,6 +7,9 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { SiteSettings } from './globals/SiteSettings'
+import { landingEndpoint } from './endpoints/landing'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -18,13 +21,19 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  collections: [Users, Media, Pages],
+  globals: [SiteSettings],
+  endpoints: [landingEndpoint],
+  cors: (process.env.FRONTEND_URL || 'http://localhost:5173,http://localhost:4173')
+    .split(',').map((origin) => origin.trim()).filter(Boolean),
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
+    // Використовуємо наявну схему Neon без автоматичних змін під час запуску.
+    push: false,
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
