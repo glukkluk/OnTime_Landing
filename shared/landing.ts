@@ -27,7 +27,24 @@ export interface HowItWorksBlock {
     steps: { title: string; description: string }[];
 }
 
-export type LandingBlock = HeroBlock | FeaturesBlock | HowItWorksBlock;
+export interface FAQBlock {
+    blockType: "faq";
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: { question: string; answer: string }[];
+}
+
+export interface CallToActionBlock {
+    blockType: "cta";
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryLabel: string;
+    secondaryLabel: string;
+}
+
+export type LandingBlock = HeroBlock | FeaturesBlock | HowItWorksBlock | FAQBlock | CallToActionBlock;
 
 export interface LandingPage {
     title: string;
@@ -73,11 +90,11 @@ export function isLandingContent(value: unknown): value is LandingContent {
         ]) &&
         Array.isArray(value.page.blocks) &&
         value.page.blocks.length >= 1 &&
-        value.page.blocks.length <= 3 &&
+        value.page.blocks.length <= 5 &&
         value.page.blocks.every(isLandingBlock) &&
         value.page.blocks[0].blockType === "hero" &&
         value.page.blocks.every((block, index, blocks) => {
-            const order = ["hero", "features", "how-it-works"];
+            const order = ["hero", "features", "how-it-works", "faq", "cta"];
             return (
                 index === 0 ||
                 order.indexOf(block.blockType) >
@@ -130,6 +147,19 @@ function isLandingBlock(block: unknown): block is LandingBlock {
                         hasStrings(step, ["title", "description"]),
                 )
             );
+        case "faq":
+            return (
+                Array.isArray(block.items) &&
+                block.items.length >= 1 &&
+                block.items.length <= 10 &&
+                block.items.every((item: unknown) =>
+                    isRecord(item) &&
+                    typeof item.question === "string" && item.question.trim().length > 0 &&
+                    typeof item.answer === "string" && item.answer.trim().length > 0,
+                )
+            );
+        case "cta":
+            return hasStrings(block, ["primaryLabel", "secondaryLabel"]);
         default:
             return false;
     }
