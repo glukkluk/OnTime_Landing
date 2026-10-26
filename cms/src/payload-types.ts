@@ -182,7 +182,7 @@ export interface Page {
   title: string
   description: string
   /**
-   * Головний екран, потім необов’язкова секція можливостей.
+   * Головний екран, потім необов’язкові секції «Можливості» та «Як це працює».
    */
   blocks: (
     | {
@@ -213,6 +213,19 @@ export interface Page {
         id?: string | null
         blockName?: string | null
         blockType: 'features'
+      }
+    | {
+        eyebrow: string
+        title: string
+        description: string
+        steps: {
+          title: string
+          description: string
+          id?: string | null
+        }[]
+        id?: string | null
+        blockName?: string | null
+        blockType: 'how-it-works'
       }
   )[]
   updatedAt: string
@@ -380,6 +393,22 @@ export interface PagesSelect<T extends boolean = true> {
                     id?: T
                   }
               ctaLabel?: T
+              id?: T
+              blockName?: T
+            }
+        'how-it-works'?:
+          | T
+          | {
+              eyebrow?: T
+              title?: T
+              description?: T
+              steps?:
+                | T
+                | {
+                    title?: T
+                    description?: T
+                    id?: T
+                  }
               id?: T
               blockName?: T
             }

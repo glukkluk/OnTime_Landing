@@ -19,7 +19,15 @@ export interface FeaturesBlock {
     ctaLabel: string;
 }
 
-export type LandingBlock = HeroBlock | FeaturesBlock;
+export interface HowItWorksBlock {
+    blockType: "how-it-works";
+    eyebrow: string;
+    title: string;
+    description: string;
+    steps: { title: string; description: string }[];
+}
+
+export type LandingBlock = HeroBlock | FeaturesBlock | HowItWorksBlock;
 
 export interface LandingPage {
     title: string;
@@ -65,28 +73,63 @@ export function isLandingContent(value: unknown): value is LandingContent {
         ]) &&
         Array.isArray(value.page.blocks) &&
         value.page.blocks.length >= 1 &&
-        value.page.blocks.length <= 2 &&
+        value.page.blocks.length <= 3 &&
         value.page.blocks.every(isLandingBlock) &&
         value.page.blocks[0].blockType === "hero" &&
-        (value.page.blocks.length === 1 || value.page.blocks[1].blockType === "features")
+        value.page.blocks.every((block, index, blocks) => {
+            const order = ["hero", "features", "how-it-works"];
+            return (
+                index === 0 ||
+                order.indexOf(block.blockType) >
+                    order.indexOf(blocks[index - 1].blockType)
+            );
+        })
     );
 }
 
 function isLandingBlock(block: unknown): block is LandingBlock {
-    if (!isRecord(block) || !hasStrings(block, ["eyebrow", "title", "description"]))
+    if (
+        !isRecord(block) ||
+        !hasStrings(block, ["eyebrow", "title", "description"])
+    )
         return false;
 
     switch (block.blockType) {
         case "hero":
-            return hasStrings(block, ["accent", "primaryLabel", "secondaryLabel"])
-                && Array.isArray(block.highlights)
-                && block.highlights.every((item: unknown) => typeof item === "string");
+            return (
+                hasStrings(block, [
+                    "accent",
+                    "primaryLabel",
+                    "secondaryLabel",
+                ]) &&
+                Array.isArray(block.highlights) &&
+                block.highlights.every(
+                    (item: unknown) => typeof item === "string",
+                )
+            );
         case "features":
-            return hasStrings(block, ["ctaLabel"])
-                && Array.isArray(block.cards)
-                && block.cards.length >= 1 && block.cards.length <= 6
-                && block.cards.every((card: unknown) =>
-                    isRecord(card) && hasStrings(card, ["title", "description"]));
+            return (
+                hasStrings(block, ["ctaLabel"]) &&
+                Array.isArray(block.cards) &&
+                block.cards.length >= 1 &&
+                block.cards.length <= 6 &&
+                block.cards.every(
+                    (card: unknown) =>
+                        isRecord(card) &&
+                        hasStrings(card, ["title", "description"]),
+                )
+            );
+        case "how-it-works":
+            return (
+                Array.isArray(block.steps) &&
+                block.steps.length >= 1 &&
+                block.steps.length <= 5 &&
+                block.steps.every(
+                    (step: unknown) =>
+                        isRecord(step) &&
+                        hasStrings(step, ["title", "description"]),
+                )
+            );
         default:
             return false;
     }

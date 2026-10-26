@@ -8,6 +8,15 @@ export function toLandingContent(page: Page, site: SiteSetting): LandingContent 
       title: page.title,
       description: page.description,
       blocks: page.blocks.map((block): LandingBlock => {
+        if (block.blockType === 'how-it-works') {
+          return {
+            blockType: block.blockType,
+            eyebrow: block.eyebrow,
+            title: block.title,
+            description: block.description,
+            steps: block.steps.map(({ title, description }) => ({ title, description })),
+          }
+        }
         if (block.blockType === 'features') {
           return {
             blockType: block.blockType,

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { Hero } from '../blocks/Hero'
 import { Features } from '../blocks/Features'
+import { HowItWorks } from '../blocks/HowItWorks'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -29,21 +30,25 @@ export const Pages: CollectionConfig = {
       name: 'blocks',
       type: 'blocks',
       label: 'Блоки сторінки',
-      blocks: [Hero, Features],
+      blocks: [Hero, Features, HowItWorks],
       required: true,
       minRows: 1,
-      maxRows: 2,
+      maxRows: 3,
       validate: (value) => {
-        if (!Array.isArray(value) || value.length < 1 || value.length > 2) {
-          return 'Додайте головний екран і, за бажанням, секцію можливостей.'
+        if (!Array.isArray(value) || value.length < 1 || value.length > 3) {
+          return 'Додайте головний екран і, за бажанням, наступні секції.'
         }
+        const order = ['hero', 'features', 'how-it-works']
+        const positions = value.map((block) => order.indexOf(block.blockType))
         return (
-          (value[0]?.blockType === 'hero' &&
-            (value.length === 1 || value[1]?.blockType === 'features')) ||
-          'Перший блок — головний екран, другий — можливості. Блоки не повинні повторюватися.'
+          (positions[0] === 0 &&
+            positions.every((position, index) => index === 0 || position > positions[index - 1])) ||
+          'Порядок: головний екран → можливості → як це працює. Блоки не повинні повторюватися.'
         )
       },
-      admin: { description: 'Головний екран, потім необов’язкова секція можливостей.' },
+      admin: {
+        description: 'Головний екран, потім необов’язкові секції «Можливості» та «Як це працює».',
+      },
     },
   ],
 }

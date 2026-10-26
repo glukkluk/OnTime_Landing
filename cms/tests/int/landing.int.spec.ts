@@ -3,8 +3,9 @@ import { describe, expect, it } from 'vitest'
 import { toLandingContent } from '../../src/lib/landing'
 import { isLandingContent } from '../../../shared/landing'
 import type { Page, SiteSetting } from '../../src/payload-types'
-import type { FeaturesBlock } from '../../../shared/landing'
+import type { FeaturesBlock, HowItWorksBlock } from '../../../shared/landing'
 import { renderFeatures } from '../../../frontend/src/blocks/features/features'
+import { renderHowItWorks } from '../../../frontend/src/blocks/how-it-works/how-it-works'
 
 const page: Page = {
   id: 1,
@@ -118,5 +119,51 @@ describe('Публічний контракт лендінгу', () => {
     expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;')
     expect(html).toContain('Календар &amp; завдання')
     expect(html).toContain('/register/')
+  })
+
+  it('передає кроки без службових полів і підтримує необов’язкову секцію можливостей', () => {
+    const howItWorks: HowItWorksBlock = {
+      blockType: 'how-it-works',
+      eyebrow: 'Початок',
+      title: 'Як це працює',
+      description: 'Три кроки',
+      steps: [{ title: '<script>test</script>', description: 'Плануй & дій' }],
+    }
+    const content = toLandingContent(
+      {
+        ...page,
+        blocks: [
+          ...page.blocks,
+          features,
+          {
+            ...howItWorks,
+            id: 'steps-block-id',
+            steps: [{ ...howItWorks.steps[0], id: 'step-id' }],
+          },
+        ],
+      },
+      site,
+    )
+    expect(content.page.blocks[2]).toEqual(howItWorks)
+    expect(isLandingContent(content)).toBe(true)
+    expect(
+      isLandingContent({
+        ...content,
+        page: { ...content.page, blocks: [content.page.blocks[0], howItWorks] },
+      }),
+    ).toBe(true)
+    for (const blocks of [
+      [content.page.blocks[0], howItWorks, features],
+      [content.page.blocks[0], howItWorks, howItWorks],
+      [content.page.blocks[0], { ...howItWorks, steps: [] }],
+      [content.page.blocks[0], { ...howItWorks, steps: [{ title: 'Крок' }] }],
+    ]) {
+      expect(isLandingContent({ ...content, page: { ...content.page, blocks } })).toBe(false)
+    }
+    const html = renderHowItWorks(howItWorks)
+    expect(html).toContain('<ol')
+    expect(html).toContain('&lt;script&gt;test&lt;/script&gt;')
+    expect(html).toContain('Плануй &amp; дій')
+    expect(html).not.toContain('<script>')
   })
 })
