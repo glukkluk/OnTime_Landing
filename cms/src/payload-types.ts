@@ -181,7 +181,7 @@ export interface Page {
   title: string;
   description: string;
   /**
-   * Головний екран, потім необов’язкові секції «Можливості», «Як це працює», FAQ та «Заклик до дії».
+   * Головний екран завжди перший. Інші секції можна розміщувати в будь-якому порядку без повторень.
    */
   blocks: (
     | {
@@ -225,6 +225,28 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'how-it-works';
+      }
+    | {
+        eyebrow: string;
+        title: string;
+        description: string;
+        scenarios: {
+          audience: string;
+          title: string;
+          description: string;
+          /**
+           * Демонстраційні пункти, а не справжні події користувачів.
+           */
+          schedule: {
+            time: string;
+            activity: string;
+            id?: string | null;
+          }[];
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'audiences';
       }
     | {
         eyebrow: string;
@@ -429,6 +451,30 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     title?: T;
                     description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        audiences?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              scenarios?:
+                | T
+                | {
+                    audience?: T;
+                    title?: T;
+                    description?: T;
+                    schedule?:
+                      | T
+                      | {
+                          time?: T;
+                          activity?: T;
+                          id?: T;
+                        };
                     id?: T;
                   };
               id?: T;

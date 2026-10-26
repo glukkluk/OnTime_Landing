@@ -1,15 +1,13 @@
 import type {
+  AudiencesBlock,
   CallToActionBlock,
-  FAQBlock,
   LandingBlock,
   LandingContent,
 } from '../../../shared/landing'
 import type { Page, SiteSetting } from '../payload-types'
 
-/** Публічний контракт без службових полів Payload та ідентифікаторів БД. */
 export function toLandingContent(page: Page, site: SiteSetting): LandingContent {
-  // Дозволяє читати новий блок до наступного запуску Payload generate:types.
-  const blocks: Array<Page['blocks'][number] | CallToActionBlock | FAQBlock> = page.blocks
+  const blocks: Array<Page['blocks'][number] | CallToActionBlock | AudiencesBlock> = page.blocks
 
   return {
     page: {
@@ -24,6 +22,20 @@ export function toLandingContent(page: Page, site: SiteSetting): LandingContent 
             description: block.description,
             primaryLabel: block.primaryLabel,
             secondaryLabel: block.secondaryLabel,
+          }
+        }
+        if (block.blockType === 'audiences') {
+          return {
+            blockType: block.blockType,
+            eyebrow: block.eyebrow,
+            title: block.title,
+            description: block.description,
+            scenarios: block.scenarios.map((scenario) => ({
+              audience: scenario.audience,
+              title: scenario.title,
+              description: scenario.description,
+              schedule: scenario.schedule.map(({ time, activity }) => ({ time, activity })),
+            })),
           }
         }
         if (block.blockType === 'faq') {

@@ -3,6 +3,7 @@ import { authenticated } from '../access/authenticated'
 import { Hero } from '../blocks/Hero'
 import { Features } from '../blocks/Features'
 import { HowItWorks } from '../blocks/HowItWorks'
+import { Audiences } from '../blocks/Audiences'
 import { FAQ } from '../blocks/FAQ'
 import { CallToAction } from '../blocks/CallToAction'
 
@@ -32,24 +33,31 @@ export const Pages: CollectionConfig = {
       name: 'blocks',
       type: 'blocks',
       label: 'Блоки сторінки',
-      blocks: [Hero, Features, HowItWorks, FAQ, CallToAction],
+      blocks: [Hero, Features, HowItWorks, Audiences, FAQ, CallToAction],
       required: true,
       minRows: 1,
-      maxRows: 5,
+      maxRows: 6,
       validate: (value) => {
-        if (!Array.isArray(value) || value.length < 1 || value.length > 5) {
+        if (!Array.isArray(value) || value.length < 1 || value.length > 6) {
           return 'Додайте головний екран і, за бажанням, наступні секції.'
         }
-        const order = ['hero', 'features', 'how-it-works', 'faq', 'cta']
-        const positions = value.map((block) => order.indexOf(block.blockType))
-        return (
-          (positions[0] === 0 &&
-            positions.every((position, index) => index === 0 || position > positions[index - 1])) ||
-          'Порядок: головний екран → можливості → як це працює → FAQ → заклик до дії. Блоки не повинні повторюватися.'
-        )
+        const allowedBlockTypes = ['hero', 'features', 'how-it-works', 'audiences', 'faq', 'cta']
+        const blockTypes = value.map((block) => block.blockType)
+
+        if (blockTypes[0] !== 'hero') {
+          return 'Головний екран повинен бути першим блоком.'
+        }
+        if (blockTypes.some((type) => !allowedBlockTypes.includes(type))) {
+          return 'Сторінка містить невідомий тип блока.'
+        }
+        if (new Set(blockTypes).size !== blockTypes.length) {
+          return 'Блоки на сторінці не повинні повторюватися.'
+        }
+        return true
       },
       admin: {
-        description: 'Головний екран, потім необов’язкові секції «Можливості», «Як це працює», FAQ та «Заклик до дії».',
+        description:
+          'Головний екран завжди перший. Інші секції можна розміщувати в будь-якому порядку без повторень.',
       },
     },
   ],

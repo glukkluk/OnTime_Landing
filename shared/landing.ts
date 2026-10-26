@@ -27,6 +27,19 @@ export interface HowItWorksBlock {
     steps: { title: string; description: string }[];
 }
 
+export interface AudiencesBlock {
+    blockType: "audiences";
+    eyebrow: string;
+    title: string;
+    description: string;
+    scenarios: {
+        audience: string;
+        title: string;
+        description: string;
+        schedule: { time: string; activity: string }[];
+    }[];
+}
+
 export interface FAQBlock {
     blockType: "faq";
     eyebrow: string;
@@ -44,7 +57,13 @@ export interface CallToActionBlock {
     secondaryLabel: string;
 }
 
-export type LandingBlock = HeroBlock | FeaturesBlock | HowItWorksBlock | FAQBlock | CallToActionBlock;
+export type LandingBlock =
+    | HeroBlock
+    | FeaturesBlock
+    | HowItWorksBlock
+    | AudiencesBlock
+    | FAQBlock
+    | CallToActionBlock;
 
 export interface LandingPage {
     title: string;
@@ -90,17 +109,11 @@ export function isLandingContent(value: unknown): value is LandingContent {
         ]) &&
         Array.isArray(value.page.blocks) &&
         value.page.blocks.length >= 1 &&
-        value.page.blocks.length <= 5 &&
+        value.page.blocks.length <= 6 &&
         value.page.blocks.every(isLandingBlock) &&
         value.page.blocks[0].blockType === "hero" &&
-        value.page.blocks.every((block, index, blocks) => {
-            const order = ["hero", "features", "how-it-works", "faq", "cta"];
-            return (
-                index === 0 ||
-                order.indexOf(block.blockType) >
-                    order.indexOf(blocks[index - 1].blockType)
-            );
-        })
+        new Set(value.page.blocks.map((block) => block.blockType)).size ===
+            value.page.blocks.length
     );
 }
 
@@ -147,15 +160,44 @@ function isLandingBlock(block: unknown): block is LandingBlock {
                         hasStrings(step, ["title", "description"]),
                 )
             );
+        case "audiences":
+            return (
+                Array.isArray(block.scenarios) &&
+                block.scenarios.length >= 1 &&
+                block.scenarios.length <= 3 &&
+                block.scenarios.every(
+                    (scenario: unknown) =>
+                        isRecord(scenario) &&
+                        hasStrings(scenario, [
+                            "audience",
+                            "title",
+                            "description",
+                        ]) &&
+                        Array.isArray(scenario.schedule) &&
+                        scenario.schedule.length >= 2 &&
+                        scenario.schedule.length <= 4 &&
+                        scenario.schedule.every(
+                            (item: unknown) =>
+                                isRecord(item) &&
+                                typeof item.time === "string" &&
+                                item.time.trim().length > 0 &&
+                                typeof item.activity === "string" &&
+                                item.activity.trim().length > 0,
+                        ),
+                )
+            );
         case "faq":
             return (
                 Array.isArray(block.items) &&
                 block.items.length >= 1 &&
                 block.items.length <= 10 &&
-                block.items.every((item: unknown) =>
-                    isRecord(item) &&
-                    typeof item.question === "string" && item.question.trim().length > 0 &&
-                    typeof item.answer === "string" && item.answer.trim().length > 0,
+                block.items.every(
+                    (item: unknown) =>
+                        isRecord(item) &&
+                        typeof item.question === "string" &&
+                        item.question.trim().length > 0 &&
+                        typeof item.answer === "string" &&
+                        item.answer.trim().length > 0,
                 )
             );
         case "cta":
