@@ -1,4 +1,4 @@
-import type { LandingContent } from '../../../shared/landing'
+import type { LandingBlock, LandingContent } from '../../../shared/landing'
 import type { Page, SiteSetting } from '../payload-types'
 
 /** Публічний контракт без службових полів Payload та ідентифікаторів БД. */
@@ -7,16 +7,28 @@ export function toLandingContent(page: Page, site: SiteSetting): LandingContent 
     page: {
       title: page.title,
       description: page.description,
-      blocks: page.blocks.map((block) => ({
-        blockType: block.blockType,
-        eyebrow: block.eyebrow,
-        title: block.title,
-        accent: block.accent,
-        description: block.description,
-        primaryLabel: block.primaryLabel,
-        secondaryLabel: block.secondaryLabel,
-        highlights: block.highlights.map((item) => item.text),
-      })),
+      blocks: page.blocks.map((block): LandingBlock => {
+        if (block.blockType === 'features') {
+          return {
+            blockType: block.blockType,
+            eyebrow: block.eyebrow,
+            title: block.title,
+            description: block.description,
+            cards: block.cards.map(({ title, description }) => ({ title, description })),
+            ctaLabel: block.ctaLabel,
+          }
+        }
+        return {
+          blockType: block.blockType,
+          eyebrow: block.eyebrow,
+          title: block.title,
+          accent: block.accent,
+          description: block.description,
+          primaryLabel: block.primaryLabel,
+          secondaryLabel: block.secondaryLabel,
+          highlights: block.highlights.map((item) => item.text),
+        }
+      }),
     },
     site: {
       siteName: site.siteName,

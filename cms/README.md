@@ -1,4 +1,4 @@
-# Dayflow CMS
+# OnTime CMS
 
 Payload 3 + Next.js + PostgreSQL у Neon.
 
@@ -9,7 +9,8 @@ Payload 3 + Next.js + PostgreSQL у Neon.
 - Сторінки: колекція `pages`, головна сторінка має slug `home`.
 - Шапка та підвал: global `site-settings`.
 - Підключення до наявної Neon БД — через `DATABASE_URL` у `.env`.
-- `push: false`: запуск CMS не змінює схему БД автоматично.
+- У режимі розробки Payload автоматично синхронізує схему Neon з колекціями та блоками, як у прикладі.
+- Блоки сторінки: Hero → Можливості (необов'язково).
 
 ```sh
 npm ci

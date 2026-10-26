@@ -1,6 +1,6 @@
 import "./style.css";
 import { getLandingContent } from "./api";
-import { renderHero } from "./blocks/hero/hero";
+import { renderBlock } from "./render";
 import { renderHeader } from "./layout/header";
 import { escapeHtml } from "./lib/html";
 
@@ -10,7 +10,7 @@ if (!app) throw new Error("Не знайдено контейнер сторін
 
 async function loadPage(container: HTMLDivElement): Promise<void> {
     container.innerHTML =
-        '<main class="page-status container" aria-busy="true"><p role="status">Завантажуємо Dayflow…</p></main>';
+        '<main class="page-status container" aria-busy="true"><p role="status">Завантажуємо OnTime…</p></main>';
 
     try {
         const { page, site } = await getLandingContent();
@@ -23,7 +23,7 @@ async function loadPage(container: HTMLDivElement): Promise<void> {
             <a class="skip-link" href="#main">Перейти до вмісту</a>
             ${renderHeader(site)}
             <main id="main" tabindex="-1">
-                ${page.blocks.map(renderHero).join("")}
+                ${page.blocks.map(renderBlock).join("")}
             </main>
             <footer class="site-footer container">
                 <span>${escapeHtml(site.footerText)}</span>
@@ -31,10 +31,10 @@ async function loadPage(container: HTMLDivElement): Promise<void> {
             </footer>
 `;
     } catch (error) {
-        console.error("Не вдалося завантажити контент Dayflow", error);
+        console.error("Не вдалося завантажити контент OnTime", error);
         container.innerHTML = `
             <main class="page-status container">
-                <h1>Dayflow зараз недоступний</h1>
+                <h1>OnTime зараз недоступний</h1>
                 <p role="alert">Не вдалося завантажити сторінку. Спробуй ще раз за мить.</p>
                 <button class="button" type="button" id="retry">Спробувати ще раз</button>
             </main>

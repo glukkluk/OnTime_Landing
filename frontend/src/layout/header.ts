@@ -6,7 +6,7 @@ export function renderHeader(site: SiteSettings): string {
     return `
         <header class="site-header container">
             <a class="brand" href="./" aria-label="${escapeHtml(site.siteName)} — головна">
-                <img class="brand-mark" src="${import.meta.env.BASE_URL}dayflow.svg" width="38" height="38" alt="" />${escapeHtml(site.siteName)}
+                <img class="brand-mark" src="${import.meta.env.BASE_URL}ontime.svg" width="38" height="38" alt="" />${escapeHtml(site.siteName)}
             </a>
                 <span class="header-caption">${escapeHtml(site.tagline)}</span>
             <nav class="header-actions" aria-label="Обліковий запис">

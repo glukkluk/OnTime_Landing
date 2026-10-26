@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { Hero } from '../blocks/Hero'
+import { Features } from '../blocks/Features'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -28,11 +29,21 @@ export const Pages: CollectionConfig = {
       name: 'blocks',
       type: 'blocks',
       label: 'Блоки сторінки',
-      blocks: [Hero],
+      blocks: [Hero, Features],
       required: true,
       minRows: 1,
-      maxRows: 1,
-      admin: { description: 'На цьому етапі сторінка містить один головний екран.' },
+      maxRows: 2,
+      validate: (value) => {
+        if (!Array.isArray(value) || value.length < 1 || value.length > 2) {
+          return 'Додайте головний екран і, за бажанням, секцію можливостей.'
+        }
+        return (
+          (value[0]?.blockType === 'hero' &&
+            (value.length === 1 || value[1]?.blockType === 'features')) ||
+          'Перший блок — головний екран, другий — можливості. Блоки не повинні повторюватися.'
+        )
+      },
+      admin: { description: 'Головний екран, потім необов’язкова секція можливостей.' },
     },
   ],
 }
