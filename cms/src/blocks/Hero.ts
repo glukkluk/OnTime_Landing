@@ -2,7 +2,7 @@ import type { Block } from 'payload'
 
 export const Hero: Block = {
   slug: 'hero',
-  labels: { singular: 'Головний екран', plural: 'Головні екрани' },
+  labels: { singular: 'Hero', plural: 'Hero' },
   fields: [
     { name: 'eyebrow', type: 'text', label: 'Текст над заголовком', required: true },
     { name: 'title', type: 'text', label: 'Заголовок', required: true },
