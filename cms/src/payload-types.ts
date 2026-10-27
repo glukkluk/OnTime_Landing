@@ -176,7 +176,7 @@ export interface Page {
   id: number;
   title: string;
   slug: string;
-  'seo-title': string;
+  description: string;
   blocks: (
     | {
         eyebrow: string;
@@ -395,7 +395,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
-  'seo-title'?: T;
+  description?: T;
   blocks?:
     | T
     | {

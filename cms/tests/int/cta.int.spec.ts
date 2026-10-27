@@ -27,16 +27,16 @@ const content = {
 }
 
 describe('завершальний заклик до дії', () => {
-  it('приймає необов’язкову CTA після Hero', () => {
+  it('приймає CTA у довільному порядку та з повторами', () => {
     expect(isLandingContent(content)).toBe(true)
     expect(isLandingContent({
       ...content,
       page: { ...content.page, blocks: [cta, hero] },
-    })).toBe(false)
+    })).toBe(true)
     expect(isLandingContent({
       ...content,
       page: { ...content.page, blocks: [hero, cta, cta] },
-    })).toBe(false)
+    })).toBe(true)
   })
 
   it('екранує текст із Payload та використовує посилання на застосунок', () => {

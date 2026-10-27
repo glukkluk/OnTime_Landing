@@ -11,7 +11,7 @@ const page: Page = {
   id: 1,
   slug: 'home',
   title: 'OnTime',
-  'seo-title': 'Планувальник',
+  description: 'Планувальник',
   createdAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:00:00Z',
   blocks: [
@@ -44,6 +44,7 @@ describe('Публічний контракт лендінгу', () => {
   it('перетворює масиви Payload і прибирає службові поля', () => {
     const content = toLandingContent(page, site)
     expect(isLandingContent(content)).toBe(true)
+    expect(content.page.description).toBe(page.description)
     expect(content.page.blocks[0]).toMatchObject({ highlights: ['Календар'] })
     expect(content.page.blocks[0].description).toBe(page.blocks[0].description)
     expect(content.page).not.toHaveProperty('id')
@@ -98,13 +99,13 @@ describe('Публічний контракт лендінгу', () => {
         ...content,
         page: { ...content.page, blocks: [...content.page.blocks].reverse() },
       }),
-    ).toBe(false)
+    ).toBe(true)
     expect(
       isLandingContent({
         ...content,
         page: { ...content.page, blocks: [content.page.blocks[0], content.page.blocks[0]] },
       }),
-    ).toBe(false)
+    ).toBe(true)
     expect(
       isLandingContent({
         ...content,
@@ -155,6 +156,13 @@ describe('Публічний контракт лендінгу', () => {
     for (const blocks of [
       [content.page.blocks[0], howItWorks, features],
       [content.page.blocks[0], howItWorks, howItWorks],
+      [howItWorks],
+      [{ ...howItWorks, steps: Array.from({ length: 6 }, () => howItWorks.steps[0]) }],
+      [{ ...features, cards: Array.from({ length: 7 }, () => features.cards[0]) }],
+    ]) {
+      expect(isLandingContent({ ...content, page: { ...content.page, blocks } })).toBe(true)
+    }
+    for (const blocks of [
       [content.page.blocks[0], { ...howItWorks, steps: [] }],
       [content.page.blocks[0], { ...howItWorks, steps: [{ title: 'Крок' }] }],
     ]) {

@@ -109,11 +109,7 @@ export function isLandingContent(value: unknown): value is LandingContent {
         ]) &&
         Array.isArray(value.page.blocks) &&
         value.page.blocks.length >= 1 &&
-        value.page.blocks.length <= 6 &&
-        value.page.blocks.every(isLandingBlock) &&
-        value.page.blocks[0].blockType === "hero" &&
-        new Set(value.page.blocks.map((block) => block.blockType)).size ===
-            value.page.blocks.length
+        value.page.blocks.every(isLandingBlock)
     );
 }
 
@@ -133,6 +129,7 @@ function isLandingBlock(block: unknown): block is LandingBlock {
                     "secondaryLabel",
                 ]) &&
                 Array.isArray(block.highlights) &&
+                block.highlights.length >= 1 &&
                 block.highlights.every(
                     (item: unknown) => typeof item === "string",
                 )
@@ -142,7 +139,6 @@ function isLandingBlock(block: unknown): block is LandingBlock {
                 hasStrings(block, ["ctaLabel"]) &&
                 Array.isArray(block.cards) &&
                 block.cards.length >= 1 &&
-                block.cards.length <= 6 &&
                 block.cards.every(
                     (card: unknown) =>
                         isRecord(card) &&
@@ -153,7 +149,6 @@ function isLandingBlock(block: unknown): block is LandingBlock {
             return (
                 Array.isArray(block.steps) &&
                 block.steps.length >= 1 &&
-                block.steps.length <= 5 &&
                 block.steps.every(
                     (step: unknown) =>
                         isRecord(step) &&
@@ -190,7 +185,6 @@ function isLandingBlock(block: unknown): block is LandingBlock {
             return (
                 Array.isArray(block.items) &&
                 block.items.length >= 1 &&
-                block.items.length <= 10 &&
                 block.items.every(
                     (item: unknown) =>
                         isRecord(item) &&

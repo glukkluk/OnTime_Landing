@@ -50,20 +50,20 @@ const content: LandingContent = {
 }
 
 describe('блок Для кого OnTime', () => {
-  it('приймає блок після Hero та перед FAQ/CTA без повторів', () => {
+  it('приймає блок у довільному порядку та з повторами, але вимагає сценарії', () => {
     expect(isLandingContent(content)).toBe(true)
     expect(
       isLandingContent({
         ...content,
         page: { ...content.page, blocks: [audiences, hero] },
       }),
-    ).toBe(false)
+    ).toBe(true)
     expect(
       isLandingContent({
         ...content,
         page: { ...content.page, blocks: [hero, audiences, audiences] },
       }),
-    ).toBe(false)
+    ).toBe(true)
     expect(
       isLandingContent({
         ...content,
@@ -72,7 +72,7 @@ describe('блок Для кого OnTime', () => {
     ).toBe(false)
   })
 
-  it('підтримує повну сторінку з шести різних блоків у визначеному порядку', () => {
+  it('підтримує всі типи блоків та сторінки довші за шість блоків', () => {
     const features = {
       blockType: 'features',
       eyebrow: 'Можливості',
@@ -115,7 +115,7 @@ describe('блок Для кого OnTime', () => {
         ...content,
         page: { ...content.page, blocks: [...blocks, cta] },
       }),
-    ).toBe(false)
+    ).toBe(true)
   })
 
   it('перевіряє кількість сценаріїв та пунктів прикладу дня', () => {

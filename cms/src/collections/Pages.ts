@@ -18,7 +18,7 @@ export const Pages: CollectionConfig = {
     delete: authenticated,
   },
   fields: [
-    { name: 'title', type: 'text', label: 'Назва сторінки', required: true },
+    { name: 'title', type: 'text', label: 'Назва сторінки / SEO-заголовок', required: true },
     {
       name: 'slug',
       type: 'text',
@@ -27,7 +27,7 @@ export const Pages: CollectionConfig = {
       unique: true,
       defaultValue: 'home',
     },
-    { name: 'seo-title', type: 'text', label: 'SEO-заголовок', required: true },
+    { name: 'description', type: 'textarea', label: 'SEO-опис', required: true },
     {
       name: 'blocks',
       type: 'blocks',

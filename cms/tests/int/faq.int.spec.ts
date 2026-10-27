@@ -26,16 +26,19 @@ const content: LandingContent = {
 }
 
 describe('FAQ лендінгу', () => {
-  it('приймає FAQ після Hero та перед CTA, без обов’язкових проміжних блоків', () => {
+  it('приймає FAQ у довільному порядку, з повторами та без обмеження кількості питань', () => {
     expect(isLandingContent(content)).toBe(true)
-    expect(isLandingContent({ ...content, page: { ...content.page, blocks: [faq, hero] } })).toBe(false)
-    expect(isLandingContent({ ...content, page: { ...content.page, blocks: [hero, faq, faq] } })).toBe(false)
+    expect(isLandingContent({ ...content, page: { ...content.page, blocks: [faq, hero] } })).toBe(true)
+    expect(isLandingContent({ ...content, page: { ...content.page, blocks: [hero, faq, faq] } })).toBe(true)
+    expect(isLandingContent({
+      ...content,
+      page: { ...content.page, blocks: [{ ...faq, items: Array.from({ length: 11 }, () => faq.items[0]) }] },
+    })).toBe(true)
   })
 
-  it('відхиляє порожні, неповні та надмірно довгі списки запитань', () => {
+  it('відхиляє порожні та неповні списки запитань', () => {
     const invalidItems: unknown[] = [
       [],
-      Array.from({ length: 11 }, () => faq.items[0]),
       [{ question: ' ', answer: 'Відповідь' }],
       [{ question: 'Запитання', answer: '  ' }],
       [{ question: 'Запитання' }],

@@ -15,6 +15,7 @@ async function loadPage(container: HTMLDivElement): Promise<void> {
     try {
         const { page, site } = await getLandingContent();
         document.title = page.title;
+        document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', page.description);
 
         container.innerHTML = `
   <a class="skip-link" href="#main">Перейти до вмісту</a>
