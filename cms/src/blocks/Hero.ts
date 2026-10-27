@@ -15,7 +15,6 @@ export const Hero: Block = {
       type: 'array',
       label: 'Короткі переваги',
       minRows: 1,
-      maxRows: 5,
       required: true,
       fields: [{ name: 'text', type: 'text', label: 'Текст', required: true }],
     },

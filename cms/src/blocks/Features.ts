@@ -13,7 +13,6 @@ export const Features: Block = {
       label: 'Картки можливостей',
       required: true,
       minRows: 1,
-      maxRows: 6,
       fields: [
         { name: 'title', type: 'text', label: 'Назва можливості', required: true },
         { name: 'description', type: 'textarea', label: 'Користь для відвідувача', required: true },

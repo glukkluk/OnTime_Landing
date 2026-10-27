@@ -174,15 +174,9 @@ export interface Media {
  */
 export interface Page {
   id: number;
-  /**
-   * Для головної сторінки використовуйте home.
-   */
-  slug: string;
   title: string;
-  description: string;
-  /**
-   * Головний екран завжди перший. Інші секції можна розміщувати в будь-якому порядку без повторень.
-   */
+  slug: string;
+  'seo-title': string;
   blocks: (
     | {
         eyebrow: string;
@@ -399,9 +393,9 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
-  slug?: T;
   title?: T;
-  description?: T;
+  slug?: T;
+  'seo-title'?: T;
   blocks?:
     | T
     | {

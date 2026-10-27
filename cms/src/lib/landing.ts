@@ -12,7 +12,7 @@ export function toLandingContent(page: Page, site: SiteSetting): LandingContent 
   return {
     page: {
       title: page.title,
-      description: page.description,
+      description: page['seo-title'],
       blocks: blocks.map((block): LandingBlock => {
         if (block.blockType === 'cta') {
           return {

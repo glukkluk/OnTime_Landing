@@ -13,7 +13,6 @@ export const FAQ: Block = {
       label: 'Запитання та відповіді',
       required: true,
       minRows: 1,
-      maxRows: 10,
       fields: [
         {
           name: 'question',
