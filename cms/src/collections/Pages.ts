@@ -18,6 +18,7 @@ export const Pages: CollectionConfig = {
     delete: authenticated,
   },
   fields: [
+    { name: 'title', type: 'text', label: 'Назва сторінки', required: true },
     {
       name: 'slug',
       type: 'text',
@@ -25,39 +26,26 @@ export const Pages: CollectionConfig = {
       required: true,
       unique: true,
       defaultValue: 'home',
-      admin: { description: 'Для головної сторінки використовуйте home.' },
     },
-    { name: 'title', type: 'text', label: 'SEO-заголовок', required: true },
-    { name: 'description', type: 'textarea', label: 'SEO-опис', required: true },
+    { name: 'seo-title', type: 'text', label: 'SEO-заголовок', required: true },
     {
       name: 'blocks',
       type: 'blocks',
       label: 'Блоки сторінки',
-      blocks: [Hero, Features, HowItWorks, Audiences, FAQ, CallToAction],
+      blocks: [Hero, Features, Audiences, HowItWorks, FAQ, CallToAction],
       required: true,
       minRows: 1,
-      maxRows: 6,
       validate: (value) => {
-        if (!Array.isArray(value) || value.length < 1 || value.length > 6) {
-          return 'Додайте головний екран і, за бажанням, наступні секції.'
+        if (!Array.isArray(value) || value.length < 1) {
+          return 'Додайте хоча б один блок.'
         }
         const allowedBlockTypes = ['hero', 'features', 'how-it-works', 'audiences', 'faq', 'cta']
         const blockTypes = value.map((block) => block.blockType)
 
-        if (blockTypes[0] !== 'hero') {
-          return 'Головний екран повинен бути першим блоком.'
-        }
         if (blockTypes.some((type) => !allowedBlockTypes.includes(type))) {
           return 'Сторінка містить невідомий тип блока.'
         }
-        if (new Set(blockTypes).size !== blockTypes.length) {
-          return 'Блоки на сторінці не повинні повторюватися.'
-        }
         return true
-      },
-      admin: {
-        description:
-          'Головний екран завжди перший. Інші секції можна розміщувати в будь-якому порядку без повторень.',
       },
     },
   ],

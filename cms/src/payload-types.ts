@@ -217,19 +217,6 @@ export interface Page {
         eyebrow: string;
         title: string;
         description: string;
-        steps: {
-          title: string;
-          description: string;
-          id?: string | null;
-        }[];
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'how-it-works';
-      }
-    | {
-        eyebrow: string;
-        title: string;
-        description: string;
         scenarios: {
           audience: string;
           title: string;
@@ -247,6 +234,19 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'audiences';
+      }
+    | {
+        eyebrow: string;
+        title: string;
+        description: string;
+        steps: {
+          title: string;
+          description: string;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'how-it-works';
       }
     | {
         eyebrow: string;
@@ -440,22 +440,6 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
-        'how-it-works'?:
-          | T
-          | {
-              eyebrow?: T;
-              title?: T;
-              description?: T;
-              steps?:
-                | T
-                | {
-                    title?: T;
-                    description?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
         audiences?:
           | T
           | {
@@ -475,6 +459,22 @@ export interface PagesSelect<T extends boolean = true> {
                           activity?: T;
                           id?: T;
                         };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'how-it-works'?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              steps?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
                     id?: T;
                   };
               id?: T;
